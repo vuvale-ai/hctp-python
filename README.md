@@ -287,4 +287,4 @@ The protocol is now open-sourced so anyone can train their agents the same way.
 
 ## License
 
-MIT © Dave Kaufusi / Vuvale AI
+MIT © David Qicatabua / Vuvale AI

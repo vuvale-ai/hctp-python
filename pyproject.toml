@@ -9,7 +9,7 @@ description = "Helix Calculus Training Protocol — adaptive AI agent learning w
 readme = "README.md"
 license = { text = "MIT" }
 authors = [
-    { name = "Dave Kaufusi", email = "dave@vuvale.ai" }
+    { name = "David Qicatabua", email = "dave@vuvale.ai" }
 ]
 keywords = [
     "ai", "training", "learning", "agent", "education",

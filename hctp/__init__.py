@@ -55,7 +55,7 @@ from .tracker import LearnerSession, SessionResult
 from .curriculum import breadcrumb_prompt, karpathy_loop_prompt, session_header
 
 __version__ = "0.1.0"
-__author__  = "Dave Kaufusi / Vuvale AI"
+__author__  = "David Qicatabua / Vuvale AI"
 __license__ = "MIT"
 
 __all__ = [
