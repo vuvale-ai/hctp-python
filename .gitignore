@@ -12,3 +12,6 @@ htmlcov/
 *.egg
 venv/
 .venv/
+.claude/
+.env
+.env.local
