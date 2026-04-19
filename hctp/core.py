@@ -26,6 +26,10 @@ __all__ = [
     "NUM_SPIRALS",
     "TARGET_VELOCITY",
     "MASTERY_THRESHOLD",
+    # HCTP 2.0 constants
+    "BASE_GAIN_V2",
+    "MAX_GAIN_PER_SESSION",
+    "SPILLOVER_RATE_V2",
 ]
 
 # ── Constants ──────────────────────────────────────────────────────────────────
@@ -33,6 +37,11 @@ __all__ = [
 NUM_SPIRALS       = 5      # Full rotations of the helix from σ=0 to σ=1
 TARGET_VELOCITY   = 0.15   # Ideal learning pace (σ gain per session)
 MASTERY_THRESHOLD = 0.95   # k3 ≥ this → badge awarded
+
+# HCTP 2.0 K-vector constants (used by hctp.hctp_vector.update_vector_v2)
+BASE_GAIN_V2         = 0.025  # base per-session gain on focus checkpoint (was 0.020)
+MAX_GAIN_PER_SESSION = 0.080  # hard cap on gain per session            (new in 2.0)
+SPILLOVER_RATE_V2    = 0.10   # fraction of focus gain to siblings      (was 0.15)
 
 CHECKPOINTS: dict[str, dict] = {
     "A": {
