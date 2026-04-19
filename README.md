@@ -10,6 +10,64 @@
 
 ---
 
+## What's New in HCTP 2.0
+
+**HCTP 2.0 makes the implementation significantly more rigorous and execution-grounded.**
+
+| Feature | v1.0 | v2.0 |
+|---|---|---|
+| Quality scoring | Text heuristics | **Execution-Based Quality Score (EQS)** |
+| K-vector gain | 0.020 base, 0.060 max | **0.025 base, 0.080 max** |
+| Sibling spillover | 15 % (fixed) | **10 % × Mastery Confidence Score** |
+| Difficulty signals | Velocity only | **Velocity + helix alignment** |
+| Role awareness | None | **Security / DS / DevOps weights** |
+| Fine-tuning output | None | **VCAPO trajectory export** |
+
+### EQS — Execution-Based Quality Score
+
+Replaces marker-scanning with four objective signals:
+
+```python
+from hctp.scoring import EQSComponents
+
+eqs = EQSComponents(
+    sandbox_pass=True,      # did the code run?    (25%)
+    test_pass_rate=0.85,    # pytest pass fraction (30%)
+    grok_score=0.80,        # Grok holistic score  (30%, harmonic mean with Claude)
+    claude_score=0.75,      # Claude score
+    karpathy_depth=5,       # K-loop steps done    (15%)
+).compute()
+print(eqs.score)   # 0.7025
+```
+
+### Adaptive difficulty with roles
+
+```python
+from hctp.difficulty_engine import compute_difficulty
+
+profile = compute_difficulty(K, velocity, role="security")
+print(profile.summary())
+# Level: advanced | Focus: C — Metaclasses | Role: Security Engineer
+# Breadcrumbs: 3 | Hint density: 36% | Helix alignment: 0.82
+```
+
+### VCAPO training export
+
+```python
+from hctp.vcapo_integration import TrajectoryRecord, VCAPOExporter
+
+exporter = VCAPOExporter()
+exporter.add(ren_trajectory)
+exporter.export("training_data.jsonl", min_weight=0.30)
+```
+
+See [HCTP_2.0_Specification.md](HCTP_2.0_Specification.md) for full technical
+details and [MIGRATION_GUIDE.md](MIGRATION_GUIDE.md) for upgrade steps.
+
+---
+
+---
+
 ## What Is HCTP?
 
 HCTP models a learner's knowledge as a 3D vector **K = [k₁, k₂, k₃]** that spirals toward
@@ -229,9 +287,14 @@ A learner rushing C while neglecting A will stray far from the helix.
 **Velocity** is the smoothed rate of σ gain per session. Slow learners
 get more breadcrumbs; fast learners get broader, exploratory tasks.
 
-**Karpathy loop scoring** uses heuristic quality markers in the
-response text (presence of "error", "fix", "refactor", code blocks, etc.)
-to assign micro-gains to the focus checkpoint with 15% spillover to siblings.
+**Karpathy loop scoring** in v2.0 uses the Execution-Based Quality Score (EQS)
+grounded in sandbox execution, test pass rate, dual-teacher consensus, and
+Karpathy Loop depth. The focus checkpoint gains `min(0.025 + EQS × 0.055, 0.08)`
+per session; siblings gain `10% × MCS` of that, where MCS is the Mastery
+Confidence Score (consistency × velocity stability × helix alignment).
+
+The v1.0 heuristic scorer (`update_vector`) remains available for backward
+compatibility.
 
 ---
 
