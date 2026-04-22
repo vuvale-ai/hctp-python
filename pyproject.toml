@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "hctp"
-version = "2.0.0"
-description = "Helix Calculus Training Protocol — adaptive AI agent learning with 3D helical knowledge tracking"
+version = "3.0.0"
+description = "Helix Calculus Training Protocol — adaptive AI agent learning with helical tunnel navigation (HCTP 3.0)"
 readme = "README.md"
 license = { text = "MIT" }
 authors = [

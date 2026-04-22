@@ -10,6 +10,60 @@
 
 ---
 
+## What's New in HCTP 3.0 (Phase 1)
+
+**HCTP 3.0 — the Helical Tunnel Mastery Protocol** — turns the flat 3-checkpoint
+line into a rich **cylindrical knowledge tunnel** that learners navigate with
+both *width* (productive deviation allowed) and *depth* (hierarchical expertise).
+
+| Feature | v2.0 | v3.0 (Phase 1) |
+|---|---|---|
+| Curriculum shape | 3 flat checkpoints | **Macro-Tunnels → Sub-Tunnels (hierarchical)** |
+| Deviation | None modelled | **Explicit tunnel width + drift detection** |
+| Evaluation | Mixed into training | **External Looking Glass Evaluator (non-interfering)** |
+| Breadcrumbs | One mode | **Exploration + Re-Centering modes (auto-switched)** |
+| Entry point | `LearnerSession` | `TunnelLearnerSession` (v2 API still works) |
+
+### Quick start (v3.0)
+
+```python
+from hctp.v3 import TunnelLearnerSession
+
+session = TunnelLearnerSession("Ren")
+start = session.start_session()
+
+for prompt in start["breadcrumb_prompts"]:
+    # response = your_llm(prompt)
+    # eqs_score = your_eqs_compute(response)   # see hctp.scoring.EQSComponents
+    session.submit_response(eqs_score=0.72)
+
+result = session.finish_session()
+print(result)                       # high-level session line
+print(result.report.summary())      # full Looking Glass report
+```
+
+When the learner drifts outside the tunnel width, the next `start_session()`
+automatically switches to **re-centering breadcrumbs** — prompts that name the
+active sub-tunnel explicitly and forbid tangents until the learner is back on
+the centerline.
+
+### What's in Phase 1
+
+| Module | Purpose |
+|---|---|
+| `hctp.v3.tunnel` | `TunnelState`, `MacroTunnel`, `SubTunnel`, default 4-macro Python curriculum |
+| `hctp.v3.manifold` | Tunnel geometry — drift/alignment, global σ, navigation |
+| `hctp.v3.looking_glass` | Post-hoc `LookingGlassEvaluator` → objective `recommended_action` |
+| `hctp.v3.breadcrumbs` | Exploration + Re-Centering prompt generators |
+| `hctp.v3.session` | `TunnelLearnerSession` — the new entry point, backward compatible |
+
+Phase 2+ will add the Anticipatory Hypothesis Engine, Layered Process
+Supervision, Multi-Perspective Reflection, and Skill Compilation. The
+`Hypothesis` dataclass and `compilation_level` field are already in the v3
+state so you can start wiring upstream code against them today.
+
+---
+
 ## What's New in HCTP 2.0
 
 **HCTP 2.0 makes the implementation significantly more rigorous and execution-grounded.**

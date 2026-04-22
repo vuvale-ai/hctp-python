@@ -1,14 +1,22 @@
 """
 hctp — Helix Calculus Training Protocol
 ========================================
-Version 2.0
+Version 3.0 (Phase 1 — Helical Tunnel Mastery Protocol)
 
 A framework for measuring and driving AI agent learning through a
-3D helical knowledge model with adaptive Socratic breadcrumbs and
+helical knowledge manifold with adaptive Socratic breadcrumbs and
 mandatory Karpathy research loops.
 
-What's new in v2.0
--------------------
+What's new in v3.0 (Phase 1)
+----------------------------
+- Multi-level tunnel architecture: Macro-Tunnels → Sub-Tunnels
+- External **Looking Glass Evaluator** (non-interfering, post-hoc)
+- Drift detection + automatic re-centering breadcrumbs
+- New entry point: ``from hctp.v3 import TunnelLearnerSession``
+- Full backward compatibility with the v1/v2 ``LearnerSession`` API
+
+What's in v2.0 (still supported)
+--------------------------------
 - Execution-Based Quality Score (EQS) replaces text-marker heuristics
 - Updated K-vector rules: higher base gain, hard max cap, reduced spillover
 - Mastery Confidence Score (MCS) modulates sibling knowledge spillover
@@ -30,6 +38,19 @@ Quick start (v1.0 API — unchanged)::
         kl_response  = your_llm(kl_prompt)
         ren.submit_karpathy(kl_response)
     result = ren.finish_session()
+
+Quick start (v3.0 Tunnel API)::
+
+    from hctp.v3 import TunnelLearnerSession
+
+    session = TunnelLearnerSession("Ren")
+    start = session.start_session()
+    for prompt in start["breadcrumb_prompts"]:
+        # response = your_llm(prompt)
+        # eqs = your_eqs_compute(response)
+        session.submit_response(eqs_score=0.72)
+    result = session.finish_session()
+    print(result.report.summary())
 
 Quick start (v2.0 EQS API)::
 
@@ -82,7 +103,7 @@ from .hctp_vector import update_vector_v2
 from .difficulty_engine import compute_difficulty, DifficultyProfile, ROLES
 from .vcapo_integration import TrajectoryRecord, VCAPOExporter
 
-__version__ = "2.0.0"
+__version__ = "3.0.0"
 __author__  = "David Qicatabua / Vuvale AI"
 __license__ = "MIT"
 
