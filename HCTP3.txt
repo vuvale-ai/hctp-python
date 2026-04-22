@@ -1,0 +1,224 @@
+**HCTP 3.0 — Helical Tunnel Mastery Protocol (HTMP)**  
+**Product Requirements Document (PRD)**  
+**Version 1.0** | April 2026
+
+---
+
+### 1. Executive Summary
+
+**HCTP 3.0** transforms the original Helix Calculus Training Protocol from a 3-checkpoint linear progression into a rich, multi-level **Helical Tunnel Mastery Protocol**. 
+
+It models knowledge acquisition as navigation inside a **cylindrical knowledge tunnel** (a manifold with length, width, and internal hierarchical structure) rather than along a thin line. The protocol actively prevents agents from drifting off the optimal path while encouraging productive exploration *inside* the tunnel. It adds proactive **anticipatory learning** (agents predict the next logical concepts) and uses an external **Looking Glass Evaluator** for clean, non-interfering assessment.
+
+**Core Goal**: Deliver **2–5× improvement** in learning efficiency, depth of understanding, generalization to edge cases, and long-term mastery ceiling for AI agents learning complex domains (starting with advanced Python).
+
+The protocol remains **LLM-agnostic**, prompt-based, and execution-grounded, with zero mandatory dependencies in the core.
+
+---
+
+### 2. Problem Statement & Motivation
+
+**Current Limitations of HCTP 2.0**:
+- Only 3 flat checkpoints feels too low a ceiling for true senior/expert mastery.
+- The model is still somewhat “line-like” rather than a rich volume (tunnel).
+- Agents easily drift off the optimal path when exploring new topics, wasting sessions.
+- Evaluation is mixed into training, potentially interfering with flow.
+- Learning is mostly reactive — agents follow breadcrumbs rather than anticipating the structure of knowledge.
+- Limited hierarchical compounding and spiral revisiting of earlier concepts at higher abstraction.
+
+**User Vision** (Civil Engineer + Calculus Lover):
+- The optimal path is a **tunnel** with width (productive deviation allowed) and rich sub-structure.
+- Breadcrumbs should act as gentle guides that pull drifting agents back into the productive volume.
+- Once an agent has planted several successful “flowers” (mastered concepts), it should be able to **infer/predict** what the next logical powerful concepts should be — then test those predictions.
+
+**Research Backing**:
+- Spiral Curriculum (Bruner): Revisit core ideas at increasing complexity.
+- Process Supervision > Outcome Supervision (multiple 2024–2026 papers).
+- Hypothesis Generation & Predictive Coding / Forward Models in agents.
+- Self-generated anticipatory curricula (Agent0, Tool-R0, etc.).
+- External verification outperforms pure self-evaluation for accuracy.
+
+---
+
+### 3. Goals & Success Metrics
+
+**Primary Goals**:
+- Raise the mastery ceiling from “Python Senior Engineer” to true expert/research-level capability.
+- Significantly reduce drift and wasted sessions.
+- Build deeper, more transferable mental models through hierarchical structure and prediction.
+- Maintain the elegant geometric/mathematical soul of the original protocol.
+
+**Key Success Metrics** (measured on Ren/Ner-style agents or new test agents):
+- Sessions to reach defined mastery thresholds (2–4× faster expected).
+- Drift incidents per session (target: <30% of v2.0).
+- Generalization score on held-out edge-case and novel-topic tasks (target: +40–80%).
+- Quality of agent-generated hypotheses (human or strong-LLM judged).
+- Retention after 30-day gap (spiral revisit effect).
+- Final vector quality and tunnel alignment at “expert” level.
+
+---
+
+### 4. Key Features & Innovations
+
+#### 4.1 Multi-Level Spiral Tunnel Architecture
+- **Macro-Tunnels** (5–7 stages): Foundations → Core Abstractions → Systems & Composition → Meta-Engineering → Research & Novelty → Teaching & Leadership → Paradigm Invention.
+- **Sub-Tunnels** (3–5 per Macro-Tunnel): Hierarchical skill trees.
+- Knowledge state: richer vector including `position_σ`, `depth`, `width`, `drift_score`, `compilation_level`.
+- The centerline of the tunnel is the elegant helical geometry from v1/v2 (preserved and extended).
+
+#### 4.2 Dynamic Tunnel Navigation + Drift Detection
+- Maintains a **Tunnel Manifold Model** (rule-based + lightweight learned reconstruction).
+- Computes **Tunnel Alignment** and **Drift Score** every session.
+- Two breadcrumb modes:
+  - Exploration Breadcrumbs (inside tunnel — depth & sub-topic mastery).
+  - Re-Centering Breadcrumbs (when drift high — explicitly reference tunnel boundaries and pull agent back).
+
+#### 4.3 External Looking Glass Evaluator (Non-Interfering)
+- Runs **after** sessions (or in batch) — never during active training.
+- Provides objective signals: updated position, drift, depth, MCS, recommended actions.
+- Agent only receives clean, high-level feedback (training flow remains pure).
+
+#### 4.4 Anticipatory Hypothesis Engine (“Flower Prediction”)
+- After high mastery in a sub-tunnel, the agent generates **2–4 hypotheses** about the next logical powerful concepts.
+- Hypotheses are stored with confidence scores.
+- When the curriculum reaches those areas, the agent **explicitly tests** its earlier predictions and reflects on accuracy + gaps.
+- Turns reactive learning into proactive, structure-building learning.
+
+#### 4.5 Layered Process Supervision (L-PS)
+- Extends EQS into **Layered EQS (L-EQS)** with explicit scoring on:
+  1. Logical Consistency
+  2. Tunnel Fidelity
+  3. Depth & Abstraction Level
+  4. Connection Quality (to previous tunnels)
+  5. Production Readiness & Edge Awareness
+- Combines Process Score + Outcome Score for superior credit assignment.
+
+#### 4.6 Multi-Perspective Reflection Ensemble
+- Replaces single Karpathy loop with **4 specialized reflectors**:
+  - Critic
+  - Optimizer
+  - Connector (enforces spiral connections)
+  - Edge Explorer
+- Outputs synthesized into one high-quality reflection.
+
+#### 4.7 Recursive Spiral Revisit + Hierarchical Skill Compilation
+- After completing a Macro-Tunnel, agents periodically revisit earlier tunnels at **higher abstraction levels**.
+- When a sub-tunnel reaches high mastery, it is “compiled” into a reusable primitive skill that higher tunnels can invoke by name.
+- Creates compounding efficiency and deeper mental models.
+
+---
+
+### 5. Technical Architecture & Data Model
+
+**Core Components**:
+- `TunnelManifold` (geometry + reconstruction)
+- `LookingGlassEvaluator` (external, non-blocking)
+- `HypothesisGenerator` (anticipatory module)
+- `LayeredProcessSupervisor`
+- `ReflectionEnsemble`
+- `SkillCompiler` + `SpiralScheduler`
+- `LearnerSession` (updated state machine — backward compatible with v2.0 API where possible)
+
+**Key Data Structures** (high-level):
+```python
+@dataclass
+class TunnelState:
+    macro_tunnel: str
+    sub_tunnel: str
+    position: float          # σ along tunnel
+    depth: float
+    width: float             # allowed productive deviation
+    drift_score: float
+    compilation_level: int
+    hypothesis_history: list[Hypothesis]
+```
+
+All prompt generation remains LLM-agnostic. Execution-based signals (sandbox, tests) stay central.
+
+---
+
+### 6. Agent Experience Flow (High-Level)
+
+1. **Start Session** → Looking Glass gives current tunnel state.
+2. **Generate Breadcrumbs** → Mix of Exploration + Re-Centering based on drift.
+3. **Agent works** through Karpathy loop (now with 4-perspective ensemble).
+4. **Submit** → Layered Process Supervision scores every step.
+5. **End Session** → External Looking Glass evaluates and updates state.
+6. **Periodic**:
+   - Skill Compilation when mastery thresholds met.
+   - Hypothesis Generation when ready.
+   - Spiral Revisit scheduling.
+
+---
+
+### 7. Evaluation Strategy
+
+- **Primary**: External Looking Glass (objective, non-interfering).
+- **Secondary**: Agent self-reflection (for learning, not final scoring).
+- **Tertiary**: Execution signals (sandbox + tests) + dual strong-teacher consensus.
+- New metrics: Tunnel Alignment, Hypothesis Accuracy, Generalization Delta, Retention after Spiral Revisit.
+
+---
+
+### 8. Implementation Roadmap (Phased)
+
+**Phase 1 (MVP – 4–6 weeks)**:
+- Multi-level tunnel structure (start with 4 Macro-Tunnels).
+- External Looking Glass Evaluator.
+- Basic Drift Detection + Re-Centering Breadcrumbs.
+- Backward-compatible `LearnerSession` updates.
+
+**Phase 2 (Core Power – 6–8 weeks)**:
+- Anticipatory Hypothesis Engine + hypothesis testing.
+- Layered Process Supervision (L-EQS).
+- Multi-Perspective Reflection Ensemble.
+- Skill Compilation basics.
+
+**Phase 3 (Full Maturity – 8–12 weeks)**:
+- Recursive Spiral Revisit system.
+- Full hierarchical skill compilation.
+- Advanced Tunnel Manifold learning (lightweight).
+- Visualization & dashboard upgrades.
+- Full documentation + migration guide from 2.0.
+
+**Phase 4 (Polish & Scale)**:
+- Pro-tier custom tunnels.
+- VCAPO-style export for compiled skills.
+- Multi-agent comparative dashboards.
+
+---
+
+### 9. Risks & Mitigations
+
+| Risk                        | Likelihood | Impact | Mitigation |
+|----------------------------|------------|--------|----------|
+| Added complexity slows adoption | Medium     | Medium | Strong backward compatibility + clear migration path |
+| Hypothesis quality is noisy   | Medium     | High   | UCB-style filtering + human/strong-LLM review initially |
+| External evaluator becomes bottleneck | Low      | Medium | Make it lightweight + async; cache results |
+| Agents overfit to tunnel boundaries | Medium     | Medium | Deliberate “Exploration Windows” + Edge Explorer reflector |
+
+---
+
+### 10. Future Vision (Beyond 3.0)
+
+- Domain-agnostic version (apply to Rust, ML systems, mathematics, etc.).
+- Multi-agent collaborative tunnel navigation.
+- Integration with real codebases for live “tunnel health” monitoring.
+- Published research paper on the Helical Tunnel + Anticipatory Hypothesis approach.
+
+---
+
+### 11. Summary of Expected Gains
+
+| Metric                        | HCTP 2.0     | HCTP 3.0 Target      | Improvement Factor |
+|-------------------------------|--------------|----------------------|--------------------|
+| Sessions to Senior+ Mastery   | ~13          | 4–8                  | 2–3×              |
+| Drift / Wasted Sessions       | Baseline     | 60–75% reduction     | 3–4× efficiency   |
+| Generalization to Novel Tasks | Moderate     | High                 | +50–100%          |
+| Depth of Mental Model         | Good         | Excellent (hierarchical + predictive) | 2–3×         |
+| Expert Ceiling                | Medium       | Very High            | Significantly raised |
+
+---
+
+**This PRD captures the complete vision** — your original elegant geometry and tunnel philosophy, combined with modern research-backed mechanisms for depth, anticipation, clean evaluation, and hierarchical compounding.
+
