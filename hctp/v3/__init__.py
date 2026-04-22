@@ -57,7 +57,7 @@ from .tunnel import (
     DEFAULT_WIDTH,
     DRIFT_THRESHOLD,
 )
-from .manifold import TunnelManifold, TunnelMetrics
+from .manifold import TunnelManifold, TunnelMetrics, compute_drift
 from .looking_glass import LookingGlassEvaluator, LookingGlassReport
 from .breadcrumbs import (
     exploration_breadcrumb_prompt,
@@ -78,6 +78,7 @@ __all__ = [
     # Geometry
     "TunnelManifold",
     "TunnelMetrics",
+    "compute_drift",
     # Evaluation
     "LookingGlassEvaluator",
     "LookingGlassReport",

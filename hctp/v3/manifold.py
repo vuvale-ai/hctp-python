@@ -20,6 +20,7 @@ so a learned model can slot in behind the same API.
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
 from typing import Iterable, Sequence
 
@@ -34,8 +35,60 @@ from .tunnel import (
 __all__ = [
     "TunnelManifold",
     "TunnelMetrics",
+    "compute_drift",
     "DRIFT_THRESHOLD",
 ]
+
+
+# ── Module-level drift metric ──────────────────────────────────────────────────
+
+def compute_drift(K: Sequence[float], width: float = 0.25) -> float:
+    """Compute drift score from balanced growth.
+
+    Measures Euclidean distance from ``K`` to the balanced point ``[σ, σ, σ]``
+    (where σ = mean(K)), normalised by the maximum possible deviation at this
+    σ — i.e. the deviation that would result if a single checkpoint absorbed
+    all progress and the others stayed at zero.
+
+    Why distance from ``[σ, σ, σ]`` and not the v1/v2 helix? The v2 helix
+    winds 5 times around the σ-axis with a radius up to 0.55, so a perfectly
+    balanced ``K`` is usually *nowhere near* the helix's current (x, y) slice.
+    That metric is right for visualisation / MCS alignment but wrong for
+    drift, which should reward *balanced growth across checkpoints* inside
+    the active sub-tunnel. The balanced-point target captures exactly that.
+
+    Interpretation:
+        * ``K = [0.5, 0.5, 0.5]``            → drift = 0.0 (perfectly balanced)
+        * ``K = [0.9, 0.85, 0.8]``           → drift ≈ 0.24 (mild lean)
+        * ``K = [1.0, 0.0, 0.0]``            → drift = 1.0 (maximum imbalance)
+        * ``width = 0.25``                   → 25 % of max-deviation tolerated
+
+    Args:
+        K:      Knowledge vector (any length ≥ 1).
+        width:  Fraction of the maximum possible deviation that counts as
+                "still inside the tunnel". Must be > 0.
+
+    Returns:
+        Drift score in [0, 1]. 0 = on the balanced centerline;
+        1 = at or past the tunnel wall.
+    """
+    if not K:
+        return 0.0
+
+    n = len(K)
+    sigma = sum(K) / n
+
+    # Euclidean deviation from the balanced point [σ, σ, σ, ...]
+    dev = math.sqrt(sum((ki - sigma) ** 2 for ki in K))
+
+    # Max possible deviation at this σ: one checkpoint holds all progress.
+    # For K = [n·σ, 0, …, 0] the deviation is σ·√(n-1).
+    max_dev = sigma * math.sqrt(n - 1) if sigma > 1e-9 else 0.0
+    if max_dev < 1e-9:
+        return 0.0
+
+    width = max(1e-9, width)
+    return min(dev / (width * max_dev), 1.0)
 
 
 @dataclass(frozen=True)
@@ -158,25 +211,16 @@ class TunnelManifold:
         return progress(state.K_local)
 
     def drift_score(self, state: TunnelState) -> float:
-        """Normalised drift ∈ [0, 1].
+        """Normalised drift ∈ [0, 1] for a ``TunnelState``.
 
-        Drift = imbalance across the local K-vector (max − min), normalised
-        to the learner's tunnel ``width``. The v1/v2 helical centerline is
-        preserved for reporting (helix_distance) but **not** used for drift
-        because the 5-spiral winding makes that metric non-monotonic with
-        respect to the intuitive "balanced progress" ideal of a tunnel.
-
-        Interpretation:
-            * ``K=[0.5, 0.5, 0.5]``   → perfectly balanced → drift 0.
-            * ``K=[1.0, 0.0, 0.0]``   → maximally imbalanced → drift 1.
-            * ``width`` = 0.25        → 25% imbalance tolerated before
-                                        the tunnel wall is reached.
+        Thin wrapper over :func:`compute_drift` that pulls ``K_local`` and
+        ``width`` from the state. See ``compute_drift`` for the full rationale
+        on why drift is measured against the balanced point ``[σ, σ, σ]``
+        rather than the v1/v2 helix — in short, the helix's 5-turn winding
+        makes it the wrong target for a "balanced growth inside the tunnel"
+        metric, even though it remains the right one for MCS alignment.
         """
-        if not state.K_local:
-            return 0.0
-        imbalance = max(state.K_local) - min(state.K_local)
-        width = max(1e-6, state.width)
-        return max(0.0, min(1.0, imbalance / width))
+        return compute_drift(state.K_local, state.width)
 
     def alignment(self, state: TunnelState) -> float:
         """Tunnel alignment = 1 − drift, clipped to [0, 1]."""

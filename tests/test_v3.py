@@ -15,6 +15,7 @@ from hctp.v3 import (
     TunnelManifold,
     TunnelState,
     Hypothesis,
+    compute_drift,
     exploration_breadcrumb_prompt,
     re_centering_breadcrumb_prompt,
 )
@@ -42,6 +43,42 @@ class TestTunnelState:
         assert r.K_local == [0.2, 0.3, 0.4]
         assert len(r.hypothesis_history) == 1
         assert r.hypothesis_history[0].concept == "descriptors"
+
+
+# ── compute_drift (Euclidean, balanced-point version) ─────────────────────────
+
+class TestComputeDrift:
+    def test_empty_is_zero(self):
+        assert compute_drift([]) == 0.0
+
+    def test_all_zero_is_zero(self):
+        # sigma = 0 → max_dev = 0 → drift guarded to 0
+        assert compute_drift([0.0, 0.0, 0.0]) == 0.0
+
+    def test_perfectly_balanced_is_zero(self):
+        assert compute_drift([0.5, 0.5, 0.5]) == 0.0
+        assert compute_drift([0.85, 0.85, 0.85]) == 0.0
+
+    def test_max_imbalance_saturates(self):
+        # One axis absorbs all progress → drift clips to 1.0
+        assert compute_drift([1.0, 0.0, 0.0]) == 1.0
+
+    def test_mild_lean_is_graduated(self):
+        # K=[0.9,0.85,0.8] is a gentle staircase; Euclidean drift ≈ 0.235
+        # at width=0.25 — far from the tunnel wall, but no longer pinned to 0
+        # the way the old max−min metric handled any spread identically.
+        assert compute_drift([0.9, 0.85, 0.8]) == pytest.approx(0.2353, abs=1e-3)
+
+    def test_width_scales_drift_inversely(self):
+        K = [0.7, 0.5, 0.3]
+        tight = compute_drift(K, width=0.10)
+        loose = compute_drift(K, width=0.50)
+        assert tight >= loose
+        assert loose <= 1.0
+
+    def test_drift_is_clipped(self):
+        assert 0.0 <= compute_drift([1.0, 0.0, 0.0]) <= 1.0
+        assert 0.0 <= compute_drift([0.9, 0.85, 0.8], width=0.01) <= 1.0
 
 
 # ── Manifold ───────────────────────────────────────────────────────────────────
